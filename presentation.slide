@@ -1,0 +1,34 @@
+GCP IAM Service Account Impersonation
+
+* Introduction
+
+Current implementation of CAST.AI onboarding process
+requires separate service account to be created,
+and service account key sent to mothership and used by cast to access GCP.
+This is not acceptable for some of potential customers
+to create additional service account keys.
+
+* Service account impersonation
+
+When an authenticated principal, such as a user or another service account,
+authenticates as a service account to gain the service account's permissions,
+it's called impersonating the service account.
+  Impersonation is similar to AWS STS API methods like AssumeRole.
+
+* Key benefits of SA impersonation
+
+- Change permissions without changing your Identity and Access Management (IAM) policies.
+- Service account impersonation can be used for cross-project access,
+- Auditable: If a principal accesses resources while impersonating a service account,
+  most audit logs include both their identity and the identity of the service account they're impersonating.
+
+* How it works
+
+1. Create *SA_CAST* service account in cast.ai project.
+2. Create *SA_CLIENT* service account in *CLIENT* project.
+3. Grant SA_CAST principal roles *roles/iam.serviceAccountTokenCreator* and *roles/iam.serviceAccountUser* over SA_CLIENT resource to impersonate SA_CLIENT in Project CLIENT.
+4. *SA_CAST* impersonate *SA_CLIENT* by generating OAuth2 tokens for SA_CLIENT.
+
+* Diagram
+
+.image img/impersonation.png 960 900
